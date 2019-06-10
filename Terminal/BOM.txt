@@ -1,0 +1,38 @@
+Bill of materials for Terminal
+
+Raspberry Pi 3: 1pc
+    https://www.kjell.com/se/sortiment/dator-natverk/raspberry-pi/raspberry-pi-3-model-b-enkortsdator-p88100
+
+Power adapter: 1pc
+    https://www.kjell.com/se/sortiment/dator-natverk/raspberry-pi/natadapter-for-raspberry-pi-2-5-a-utan-strombrytare-p88525
+
+MicroSD card: 1pc
+    https://www.kjell.com/se/sortiment/mobilt/gps/gps-tillbehor/sandisk-ultra-micro-sd-kort-32-gb-p97601
+
+Push buttons, 24mm arcade buttons: 5pcs (6 pcs if using 6 buttons)
+    black: https://mediapalatset.com/arkad/knappar/sanstar-pb8-black.html
+    blue: https://mediapalatset.com/arkad/knappar/sanstar-pb8-blue.html
+    green: https://mediapalatset.com/arkad/knappar/sanstar-pb8-green.html
+    pink: https://mediapalatset.com/arkad/knappar/sanstar-pb8-pink.html
+    white: https://mediapalatset.com/arkad/knappar/sanstar-pb8-white.html
+    yellow: https://mediapalatset.com/arkad/knappar/sanstar-pb8-yellow.html
+    
+Button connectors, Insulated female disconnects terminal, 2.8mm: 10 pcs (12 pcs if using 6 buttons)
+    https://www.kjell.com/se/sortiment/el-verktyg/verktyg/lodning/kabelskor/rod-flatstifthylsa-10-pack-2-8-mm-p67200
+    
+Cables, 0.75mm2: 2x1 m
+    red: https://www.kjell.com/se/sortiment/el-verktyg/el-produkter/svagstrom/installationskabel/rkub-lagspanningskabel-ofc-0-75-mm-rod-p39567
+    black: https://www.kjell.com/se/sortiment/el-verktyg/el-produkter/svagstrom/installationskabel/rkub-lagspanningskabel-ofc-0-75-mm-svart-p39566
+
+LED, green 5mm: 1pc
+    https://www.kjell.com/se/sortiment/el-verktyg/elektronik/optokomponenter/lysdioder/lysdiod-5-mm-gron-p90712
+    
+LED, red 5mm: 1pc (if using 2 LEDs for feedback)
+    https://www.kjell.com/se/sortiment/el-verktyg/elektronik/optokomponenter/lysdioder/lysdiod-5-mm-rod-p90710
+    
+Resistor, 68 Ohm: 1 pc (2 pcs if using 2 LEDs)
+    https://www.kjell.com/se/sortiment/el-verktyg/elektronik/motstand/motstand-68-ohm-0-25w-p90224#ProductDetailedInformation
+    
+26p GPIO connector: 1pc
+    https://www.kjell.com/se/sortiment/dator-natverk/raspberry-pi/hog-26-pin-gpio-kontakt-for-raspberry-pi-p87262
+    

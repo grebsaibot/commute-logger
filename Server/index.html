@@ -1,0 +1,335 @@
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Bar Chart</title>
+    <script src="/chartjs/Chart.bundle.js"></script>
+    <script src="/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    body {background-color: lightgrey; color: black;}
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="heading"><h1>Commute Logging</h1></div>
+        <div>
+            <canvas id="canvas" width="100%" height="30%"></canvas>
+            <canvas id="canvasWeek" width="100%" height="20%"></canvas>
+        </div>
+    </div>
+    <script>
+        var localNow = null
+        var logData = {value:["0", "0", "0", "0", "0"], date:0, weather: ""};
+        var logWeek = [];
+        var labelsNames = ["Motor vehicle", "Public transportation", "E-car/biogas", "Car sharing", "Bike/Walk"];
+        var bgColor = [
+                            'rgba(20, 20, 20, 0.5)',  //black
+                            'rgba(255, 51, 153, 0.4)',  //pink
+                            'rgba(0, 153, 51, 0.4)',   //green
+                            'rgba(0, 153, 204, 0.4)',  //blue
+                            'rgba(255, 255, 255, 0.5)' //White
+                        ];
+        var bColor = [
+                            'rgba(20, 20, 20,1)',
+                            'rgba(255, 51, 153, 1)',
+                            'rgba(0, 153, 51, 1)',
+                            'rgba(0, 153, 204, 1)',
+                            'rgba(255, 255, 255, 1)'
+                        ];
+        var today = Object.create(logData);
+        
+        var barChartData = {
+            labels: labelsNames,
+            datasets: [{
+                label: '',
+                backgroundColor: bgColor,
+                borderColor: bColor,
+                borderWidth: 2,
+                data: [ 0,0,0,0,0 ]
+            }]
+        };
+        var lineChartData = {
+            labels: logWeek.dates,
+            datasets: [{
+                label: labelsNames[0],
+                backgroundColor: bgColor[0],
+                borderColor: bColor[0],
+                fill: false,
+                data: 0,
+            }, {
+                label: labelsNames[1],
+                backgroundColor: bgColor[1],
+                borderColor: bColor[1],
+                fill: false,
+                data: 0,
+            }, {
+                label: labelsNames[2],
+                backgroundColor: bgColor[2],
+                borderColor: bColor[2],
+                fill: false,
+                data: 0,
+            }, {
+                label: labelsNames[3],
+                backgroundColor: bgColor[3],
+                borderColor: bColor[3],
+                fill: false,
+                data: 0,
+            }, {
+                label: labelsNames[4],
+                backgroundColor: bgColor[4],
+                borderColor: bColor[4],
+                fill: false,
+                data: 0,
+            }]
+        };
+        
+        window.onload = function() {
+            getServerTime()
+            var ctx = document.getElementById("canvas").getContext("2d");
+            var ctxWeek = document.getElementById("canvasWeek").getContext("2d");
+            setInterval(updateTime, 1000); // once every second
+
+            window.dayGraph = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Commute Logging',
+                        fontSize: 20
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.2)'
+                            },
+                            ticks: {
+                                fontColor: 'black'
+                            }
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.2)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.5)'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 5,
+                                suggestedMax: 5,
+                                fontColor: 'black'
+                            }
+                        }]
+                    }
+                }
+            });
+            window.weekGraph = new Chart(ctxWeek, {
+                type: 'line',
+                data: lineChartData,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Commute Logging',
+                        fontSize: 20
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.2)'
+                            },
+                            ticks: {
+                                fontColor: 'black'
+                            }
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.2)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.5)'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 5,
+                                fontColor: 'black'
+                            }
+                        }]
+                    }
+                }
+            });
+            getData()
+        };
+        
+        function AddZero(num) {
+            return (num >= 0 && num < 10) ? "0" + num : num + "";
+        }
+        function getServerTime(){
+            var requestURL = '/time';
+            var request = new XMLHttpRequest();
+            request.open('GET', requestURL);
+            //request.responseType = 'json';
+            request.send();
+
+            request.onload = function() {
+                var resDate = request.responseText.replace(" ", "T")
+                localNow = new Date(resDate);
+            }
+        }
+        function updateTime(){
+            if(localNow != null){
+                localNow = new Date(localNow.getTime() + 1000);
+            }
+        }
+        function getDate(inDate){
+            var fd = new Date(inDate);
+            var year = fd.getFullYear()
+            var month = AddZero(fd.getMonth()+1)
+            var day = AddZero(fd.getDate())
+            return(year + '-' + month + '-' + day)
+        
+        }
+        function getFileName(fileDate){
+            var fd = new Date(fileDate);
+            var year = fd.getFullYear()
+            var month = AddZero(fd.getMonth()+1)
+            var date = getDate(fd)
+            var fileName = year + '-' + month + '/' + date + '.json'
+            return fileName;
+        }
+        
+        function getData() {
+            if(localNow != null){
+              var date = getDate(localNow)
+              var fileName = getFileName(localNow);
+             
+              getJsonData(fileName)
+             
+              if(logWeek.length < 5){  //only do this once
+                  for(var i = 1; i < 10; i++) {
+                      var d = new Date();
+                      d.setDate(d.getDate()-i);
+                      var oldFileName = getFileName(d);
+                      getJsonData(oldFileName)
+                  }
+              }
+              
+              setTimeout(getData, 30 * 1000);
+            }
+            else{
+              setTimeout(getData, 1 * 1000);
+            }            
+        }
+        function isDatePresentInLog(date){
+            var found = false;
+            for(var i = 0; i < logWeek.length; i++) {
+                if (logWeek[i].date.getTime() == date.getTime()) {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
+        function getIndexFromDate(date){
+            for(var i = 0; i < logWeek.length; i++) {
+                if (logWeek[i].date.getTime() == date.getTime()) {
+                    return i
+                }
+            }
+            return -1;
+        }
+        
+        function compare(a,b) {
+            if (a.date.getTime() < b.date.getTime())
+                return -1;
+            if (a.date.getTime() > b.date.getTime())
+                return 1;
+            return 0;
+        }
+        
+        function getJsonData(fileName) {
+            $.get(fileName, function(data) {
+                $.each(data, function(i, field){
+                    logData.value[i-1] = field
+                });
+                var dateStr = fileName.split("/")
+                logData.date = new Date(dateStr[1].replace(".json", "Z"))
+                logData.weather = ""
+                
+                if(logData.date.getDate() == localNow.getDate()){
+                    var copy = JSON.parse(JSON.stringify(logData))
+                    copy.date = new Date(copy.date)
+                    today = copy
+                }
+                
+                var newCopy = JSON.parse(JSON.stringify(logData))
+                newCopy.date = new Date(newCopy.date)
+                ind = getIndexFromDate(logData.date)
+                if(ind == -1){
+                    logWeek.push(newCopy)
+                    logWeek.sort(compare)
+                    if(logWeek.length>6){
+                        logWeek = logWeek.slice(1,logWeek.length)  //remove the oldest
+                    }
+                }
+                else{
+                    logWeek[ind] = newCopy
+                }
+                updateGraphs()
+            })
+            .fail(function() {
+            });
+        }
+
+        function updateGraphs(){
+            if(localNow == null) {return}
+            var date = getDate(localNow)
+            var totalEntries = 0
+            for(var j in today.value) { totalEntries += today.value[j]; }
+            var evalue = 0
+            if (totalEntries>0){
+                //new evalue also uses public transport and car sharing for lowering the value
+                //car = 1, public = 0.3, sharing = 0.5
+                var sumCO2 = today.value[0] + today.value[1]*0.3 + today.value[3]*0.5
+                evalue = ((totalEntries-sumCO2)/totalEntries)*100
+                document.getElementById("heading").innerHTML = "<h1>Commute Logging " + date + ", entries: " + totalEntries + ", e²-value: " + evalue.toFixed(0) + "</h1>";
+                
+                barChartData.datasets[0].data = today.value;
+                window.dayGraph.update();
+            }
+            
+            if(logWeek.length>0){
+                lineChartData.datasets[0].data = []
+                lineChartData.datasets[1].data = []
+                lineChartData.datasets[2].data = []
+                lineChartData.datasets[3].data = []
+                lineChartData.datasets[4].data = []
+                lineChartData.labels = []
+                for(var j = 0; j < logWeek.length; j++) {
+                    for(var i = 0; i < 5; i++) {
+                        var copy = logWeek[j].value[i]
+                        lineChartData.datasets[i].data.push(copy);
+                    }
+                    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                    //var dateLabel = new Date(logWeek[j].date).format('yyyy-mm-dd')
+                    lineChartData.labels.push(logWeek[j].date.toLocaleDateString('sv-SE', options));
+                }
+                <!--  -->
+                window.weekGraph.update();
+            }
+        }
+        
+    </script>
+</body>
+</html>

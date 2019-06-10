@@ -1,0 +1,13 @@
+Button connections to raspberry:
+pin 11(BCM 17) - Option 1 (car)             - black button
+pin 13(BCM 27) - Option 2 (public trans)    - pink button
+pin 15(BCM 22) - Option 3 (e-car)           - green button
+pin 16(BCM 23) - Option 4 (car sharing)     - blue button
+pin 18(BCM 24) - Option 5 (bike/walk)       - white button
+
+pin 12(BCM 18) - LED indicator1
+pin 10(BCM 15) - LED indicator2  
+
+pin 17 - 3v3 Power
+pin 20 - Ground
+
